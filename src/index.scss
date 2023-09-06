@@ -81,7 +81,20 @@ header {
     box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.15);
     border-radius: 6px;
     margin-bottom: 26px;
+    background-color: #fff;
 }
+
+.article-preview-in-article {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 941px;
+    height: 140px;
+    box-sizing: border-box;
+
+    margin-bottom: 26px;
+}
+
 .article-info {
     display: flex;
     flex-direction: column;
@@ -160,6 +173,7 @@ header {
     font-style: normal;
     font-weight: 400;
     line-height: 22px;
+    margin-top: 5px;
 }
 
 .tag {
@@ -171,4 +185,22 @@ header {
     font-weight: 400;
     line-height: normal;
     color: rgba(0, 0, 0, 0.5);
+    padding: 1px 4px 1px 3px;
+    margin-right: 8px;
+}
+
+.article {
+    height: 670px;
+    box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.15);
+    background-color: #fff;
+}
+
+.article-body {
+    margin: 25px 42px 30px 20px;
+    overflow: hidden;
+    font-family: 'Inter', sans-serif;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 28px;
 }
