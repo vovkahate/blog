@@ -14,12 +14,13 @@ const App = () => {
     const [page, setPage] = useState(1);
     const [hasToken, setHasToken] = useState(false);
     const [bearer, setBearer] = useState(null);
+    const [name, setName] = useState('');
     const checkToken = () => {
         const userData = JSON.parse(localStorage.getItem('userInfo'));
-
         if (userData && userData.token) {
             setHasToken(true);
             setBearer(userData.token);
+            setName(userData.username);
         } else {
             setHasToken(false);
         }
@@ -35,8 +36,15 @@ const App = () => {
 
     const { isLoading, error, data } = useQuery({
         queryKey: ['articles', page],
-        queryFn: () => FetchService.fetchData(page),
+        queryFn: () => FetchService.fetchData(page, bearer),
         keepPreviousData: true,
+        // staleTime: 10000,
+    });
+
+    const favorited = useQuery({
+        queryKey: ['favorited', name, bearer],
+        queryFn: () => FetchService.fetchFavorited(bearer, name),
+        keepPreviousData: false,
     });
 
     if (isLoading && !data) {
@@ -60,7 +68,10 @@ const App = () => {
                             path="/"
                             element={
                                 <>
-                                    <ArticleList articles={data.articles} />
+                                    <ArticleList
+                                        articles={data.articles}
+                                        favorited={favorited}
+                                    />
                                     <Pagination
                                         defaultCurrent={1}
                                         total={data.articlesCount}
