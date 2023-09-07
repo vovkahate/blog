@@ -41,7 +41,7 @@ const ArticlePreview = ({ article }) => {
                             height: '46px',
                             borderRadius: 50,
                         }}
-                        alt="Author picture"
+                        alt="Author pic"
                     />
                 </div>
             </div>

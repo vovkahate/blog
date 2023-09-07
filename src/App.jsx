@@ -1,13 +1,38 @@
 import ArticleList from './components/articleList';
 import Article from './components/article';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Pagination } from 'antd';
 import { useQuery } from '@tanstack/react-query';
 import FetchService from './services/fetch.service';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Header from './components/header';
+import { NewAccountMemo } from './components/signUp';
+import SignIn from './components/signIn';
+import EditProfile from './components/editProfile';
 
 const App = () => {
     const [page, setPage] = useState(1);
+    const [hasToken, setHasToken] = useState(false);
+    const [bearer, setBearer] = useState(null);
+    const checkToken = () => {
+        const userData = JSON.parse(localStorage.getItem('userInfo'));
+
+        if (userData && userData.token) {
+            setHasToken(true);
+            setBearer(userData.token);
+        } else {
+            setHasToken(false);
+        }
+    };
+
+    useEffect(() => {
+        checkToken();
+        window.addEventListener('storage', checkToken);
+        return () => {
+            window.removeEventListener('storage', checkToken);
+        };
+    }, []);
+
     const { isLoading, error, data } = useQuery({
         queryKey: ['articles', page],
         queryFn: () => FetchService.fetchData(page),
@@ -24,18 +49,11 @@ const App = () => {
     return (
         <BrowserRouter>
             <div className="wrapper">
-                <header>
-                    <h6 className="header-title">
-                        <Link
-                            to="/"
-                            style={{ textDecoration: 'none', color: 'black' }}
-                        >
-                            Realworld Blog
-                        </Link>
-                    </h6>
-                    <p className="header-title-buttons">Sign In</p>
-                    <p className="header-title-buttons signin">Sign Up</p>
-                </header>
+                <Header
+                    token={hasToken}
+                    checkToken={checkToken}
+                    bearer={bearer}
+                />
                 <div className="body">
                     <Routes>
                         <Route
@@ -61,6 +79,23 @@ const App = () => {
                         <Route
                             path="/articles/:slug"
                             element={<Article articles={data.articles} />}
+                        />
+                        <Route
+                            path="/sign-up"
+                            element={<NewAccountMemo checkToken={checkToken} />}
+                        />
+                        <Route
+                            path="/sign-in"
+                            element={<SignIn checkToken={checkToken} />}
+                        />
+                        <Route
+                            path="/profile"
+                            element={
+                                <EditProfile
+                                    token={hasToken}
+                                    checkToken={checkToken}
+                                />
+                            }
                         />
                     </Routes>
                 </div>
