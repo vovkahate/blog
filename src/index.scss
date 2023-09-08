@@ -222,6 +222,15 @@ header {
     box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.15);
 }
 
+.newPost {
+    width: 938px;
+    min-height: 701px;
+    box-sizing: border-box;
+    background-color: #fff;
+    border-radius: 6px;
+    box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.15);
+}
+
 .newAccount-wrapper {
     padding: 48px 32px;
     display: flex;
@@ -334,4 +343,35 @@ header {
     width: 46px;
     height: 46px;
     border-radius: 50%;
+}
+
+.dynamic-inputs {
+    display: flex;
+    flex-direction: row;
+
+    margin-top: 5px;
+}
+
+.tag-buttons {
+    background-color: transparent;
+    margin-left: 15px;
+    border-radius: 4px;
+
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 24px;
+    padding: 0 16px;
+    cursor: pointer;
+}
+
+.delete {
+    color: #f5222d;
+    border: 1px solid #f5222d;
+}
+
+.add {
+    color: #1890ff;
+    border: 1px solid #1890ff;
 }

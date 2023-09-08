@@ -9,6 +9,7 @@ import Header from './components/header';
 import { NewAccountMemo } from './components/signUp';
 import SignIn from './components/signIn';
 import EditProfile from './components/editProfile';
+import CreatePost from './components/createPost';
 
 const App = () => {
     const [page, setPage] = useState(1);
@@ -17,15 +18,19 @@ const App = () => {
     const [name, setName] = useState('');
     const checkToken = () => {
         const userData = JSON.parse(localStorage.getItem('userInfo'));
-        if (userData && userData.token) {
+        if (userData) {
             setHasToken(true);
             setBearer(userData.token);
-            setName(userData.username);
         } else {
             setHasToken(false);
         }
     };
-
+    useEffect(() => {
+        const storedName = JSON.parse(localStorage.getItem('userInfo'));
+        if (storedName) {
+            setName(storedName.username);
+        }
+    }, []);
     useEffect(() => {
         checkToken();
         window.addEventListener('storage', checkToken);
@@ -44,7 +49,7 @@ const App = () => {
     const favorited = useQuery({
         queryKey: ['favorited', name, bearer],
         queryFn: () => FetchService.fetchFavorited(bearer, name),
-        keepPreviousData: false,
+        enabled: !!name,
     });
 
     if (isLoading && !data) {
@@ -89,7 +94,12 @@ const App = () => {
                         />
                         <Route
                             path="/articles/:slug"
-                            element={<Article articles={data.articles} />}
+                            element={
+                                <Article
+                                    articles={data.articles}
+                                    favorited={favorited}
+                                />
+                            }
                         />
                         <Route
                             path="/sign-up"
@@ -107,6 +117,10 @@ const App = () => {
                                     checkToken={checkToken}
                                 />
                             }
+                        />
+                        <Route
+                            path="/new-article"
+                            element={<CreatePost />}
                         />
                     </Routes>
                 </div>

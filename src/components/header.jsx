@@ -52,7 +52,7 @@ const Header = ({ token, checkToken, bearer }) => {
             ) : (
                 <div className="header-have-token">
                     <Link
-                        to="/create-article"
+                        to="/new-article"
                         className="header-create-article"
                     >
                         Create article

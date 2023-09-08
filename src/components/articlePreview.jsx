@@ -7,16 +7,11 @@ import axios from 'axios';
 const ArticlePreview = ({ article, favorited }) => {
     const queryClient = useQueryClient();
 
-    const isLiked = favorited.data
-        ? favorited.data.articles.some((item) => item.slug === article.slug)
-        : false;
-
     const artilceLike = async (slug) => {
         const bearer = JSON.parse(localStorage.getItem('userInfo'));
         if (!bearer) {
             return;
         }
-
         await axios.post(
             `https://blog.kata.academy/api/articles/${slug}/favorite`,
             null,
@@ -51,6 +46,13 @@ const ArticlePreview = ({ article, favorited }) => {
 
     const likeMutation = useMutation(artilceLike);
     const dislikeMutation = useMutation(artilceDisike);
+
+    if (!favorited.data || !favorited.data.articles) {
+        return <div>error favorited</div>;
+    }
+    const isLiked = favorited.data.articles
+        ? favorited.data.articles.some((item) => item.slug === article.slug)
+        : false;
 
     return (
         <>
