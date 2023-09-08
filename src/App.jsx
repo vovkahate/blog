@@ -1,3 +1,4 @@
+import React from 'react';
 import ArticleList from './components/articleList';
 import Article from './components/article';
 import { useState, useEffect } from 'react';
@@ -16,7 +17,8 @@ const App = () => {
     const [hasToken, setHasToken] = useState(false);
     const [bearer, setBearer] = useState(null);
     const [name, setName] = useState('');
-    const checkToken = () => {
+
+    const checkToken = React.useCallback(() => {
         const userData = JSON.parse(localStorage.getItem('userInfo'));
         if (userData) {
             setHasToken(true);
@@ -24,13 +26,14 @@ const App = () => {
         } else {
             setHasToken(false);
         }
-    };
+    }, [setHasToken, setBearer]);
     useEffect(() => {
         const storedName = JSON.parse(localStorage.getItem('userInfo'));
         if (storedName) {
             setName(storedName.username);
         }
     }, []);
+
     useEffect(() => {
         checkToken();
         window.addEventListener('storage', checkToken);
@@ -43,7 +46,6 @@ const App = () => {
         queryKey: ['articles', page],
         queryFn: () => FetchService.fetchData(page, bearer),
         keepPreviousData: true,
-        // staleTime: 10000,
     });
 
     const favorited = useQuery({
@@ -88,10 +90,10 @@ const App = () => {
                                 </>
                             }
                         />
-                        <Route
+                        {/* <Route
                             path="/articles/*"
                             element={<ArticleList articles={data.articles} />}
-                        />
+                        /> */}
                         <Route
                             path="/articles/:slug"
                             element={
@@ -120,6 +122,10 @@ const App = () => {
                         />
                         <Route
                             path="/new-article"
+                            element={<CreatePost />}
+                        />
+                        <Route
+                            path="/articles/:slug/edit"
                             element={<CreatePost />}
                         />
                     </Routes>

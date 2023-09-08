@@ -3,8 +3,21 @@ import { HeartOutlined, HeartTwoTone } from '@ant-design/icons';
 import { formatDate, makeTags } from '../functions/functions';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { Popconfirm, message } from 'antd';
 
-const ArticlePreview = ({ article, favorited }) => {
+const ArticlePreview = ({ article, favorited, author }) => {
+    const navigate = useNavigate();
+    const confirm = (e) => {
+        console.log(e);
+        //message.success('Click on Yes');
+        deleteMutation.mutate(article.slug);
+    };
+    const cancel = (e) => {
+        //console.log(e);
+        //message.error('Click on No');
+    };
+
     const queryClient = useQueryClient();
 
     const artilceLike = async (slug) => {
@@ -40,17 +53,30 @@ const ArticlePreview = ({ article, favorited }) => {
                 },
             }
         );
-
         queryClient.invalidateQueries('articles');
+    };
+
+    const articleDelete = async (slug) => {
+        const bearer = JSON.parse(localStorage.getItem('userInfo'));
+        if (!bearer) {
+            return;
+        }
+        await axios.delete(`https://blog.kata.academy/api/articles/${slug}`, {
+            headers: {
+                Authorization: `Bearer ${bearer.token}`,
+            },
+        });
+        queryClient.invalidateQueries('articles');
+        navigate('/');
     };
 
     const likeMutation = useMutation(artilceLike);
     const dislikeMutation = useMutation(artilceDisike);
 
+    const deleteMutation = useMutation(articleDelete);
+
     let isLiked = false;
-    // let  isLiked = favorited.data.articles
-    //     ? favorited.data.articles.some((item) => item.slug === article.slug)
-    //     : false;
+
     if (favorited.data)
         isLiked = favorited.data.articles.some(
             (item) => item.slug === article.slug
@@ -96,22 +122,45 @@ const ArticlePreview = ({ article, favorited }) => {
                 <div>{makeTags(article.tagList)}</div>
                 <div className="article-description">{article.description}</div>
             </div>
-            <div className="article-profile">
-                <div className="article-author">
-                    <h6 className="author">{article.author.username}</h6>
-                    <p className="date">{formatDate(article.createdAt)}</p>
+            <div className="article-right-part">
+                <div className="article-profile">
+                    <div className="article-author">
+                        <h6 className="author">{article.author.username}</h6>
+                        <p className="date">{formatDate(article.createdAt)}</p>
+                    </div>
+                    <div>
+                        <img
+                            src={article.author.image}
+                            style={{
+                                width: '46px',
+                                height: '46px',
+                                borderRadius: 50,
+                            }}
+                            alt="Author pic"
+                        />
+                    </div>
                 </div>
-                <div>
-                    <img
-                        src={article.author.image}
-                        style={{
-                            width: '46px',
-                            height: '46px',
-                            borderRadius: 50,
-                        }}
-                        alt="Author pic"
-                    />
-                </div>
+                {author === article.author.username && (
+                    <div className="article-buttons">
+                        <Link
+                            to={`/articles/${article.slug}/edit`}
+                            state={{ article }}
+                        >
+                            Edit
+                        </Link>
+                        <Popconfirm
+                            title="Delete the task"
+                            description="Are you sure to delete this article?"
+                            onConfirm={confirm}
+                            onCancel={cancel}
+                            okText="Yes"
+                            cancelText="No"
+                            placement="rightTop"
+                        >
+                            <button>delete</button>
+                        </Popconfirm>
+                    </div>
+                )}
             </div>
         </>
     );

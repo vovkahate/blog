@@ -2,9 +2,11 @@ import { Link } from 'react-router-dom';
 import userNoPic from '../assets/images/userHasNoPicture.svg';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 
 const Header = ({ token, checkToken, bearer }) => {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
     useEffect(() => {
         console.log('Token has changed:', bearer);
@@ -12,8 +14,10 @@ const Header = ({ token, checkToken, bearer }) => {
 
     const handleLogout = () => {
         localStorage.clear();
-        checkToken();
-        navigate('/');
+        setTimeout(() => {
+            location.reload();
+        }, 500);
+        window.location.href = '/';
     };
 
     const userData = JSON.parse(localStorage.getItem('userInfo'));

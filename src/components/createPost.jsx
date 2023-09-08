@@ -1,15 +1,22 @@
-import { Button } from 'antd';
+import { useEffect } from 'react';
+import { Button, Alert } from 'antd';
 import { useForm, useFieldArray } from 'react-hook-form';
 import axios from 'axios';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const CreatePost = () => {
+    const location = useLocation();
+    const article = location.state;
+
+    //console.log('article:', article);
+
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const {
         register,
         reset,
+        setValue,
         formState: { errors, isValid },
         handleSubmit,
         control,
@@ -19,6 +26,19 @@ const CreatePost = () => {
         control,
         name: 'items',
     });
+
+    useEffect(() => {
+        const userInfo = location.state;
+        if (userInfo) {
+            const { title, description, body, tagList } = userInfo.article;
+            setValue('title', title);
+            setValue('short', description);
+            setValue('text', body);
+            tagList.forEach((item) => {
+                append({ name: item });
+            });
+        }
+    }, [setValue, append]);
 
     const createPostMutation = useMutation(
         async (formData) => {
@@ -37,6 +57,40 @@ const CreatePost = () => {
         {
             onSuccess: (data) => {
                 console.log('create post', data);
+                return queryClient.invalidateQueries('articles').then(() => {
+                    navigate('/');
+                });
+            },
+            onError: (error) => {
+                console.log('error:', error.message);
+            },
+        }
+    );
+
+    const editPostMutation = useMutation(
+        async (formData) => {
+            const bearer = JSON.parse(localStorage.getItem('userInfo'));
+            //console.log('data', formData);
+            //console.log('article', article.article.slug);
+            const id = article.article.slug;
+
+            const response = await axios.put(
+                `https://blog.kata.academy/api/articles/${id}`,
+                formData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${bearer.token}`,
+                    },
+                }
+            );
+            return response.data;
+        },
+        {
+            onSuccess: (data) => {
+                console.log('edit post', data);
+                return queryClient.invalidateQueries('articles').then(() => {
+                    navigate(`/`);
+                });
             },
             onError: (error) => {
                 console.log('error:', error.message);
@@ -45,20 +99,22 @@ const CreatePost = () => {
     );
 
     const onSubmit = (data) => {
+        const tags = data.items.map((item) => item.name);
         const requestData = {
             article: {
                 title: data.title,
                 description: data.short,
                 body: data.text,
-                tags: data.items,
+                tagList: tags,
             },
         };
-        console.log('request data:', requestData);
-        createPostMutation.mutate(requestData);
-        queryClient.invalidateQueries('articles');
-        navigate('/articles');
-
-        //reset();
+        console.log('test:', requestData);
+        console.log('article:', article);
+        if (article) {
+            editPostMutation.mutate(requestData);
+        } else {
+            createPostMutation.mutate(requestData);
+        }
     };
 
     return (
@@ -151,11 +207,12 @@ const CreatePost = () => {
                                     {...register(`items.${index}.name`, {
                                         required: 'Tag is required',
                                         minLength: {
-                                            value: 3,
+                                            value: 2,
                                             message:
                                                 'Tag must be at least 3 characters',
                                         },
                                     })}
+                                    name={`items.${index}.name`}
                                     type="text"
                                     placeholder="Tag"
                                     defaultValue={field.name}
@@ -185,7 +242,7 @@ const CreatePost = () => {
                             <button
                                 type="button"
                                 onClick={() => append({ name: '' })}
-                                className="tag-buttons add"
+                                className="tag-buttons add1"
                             >
                                 Add Tag
                             </button>
@@ -202,6 +259,23 @@ const CreatePost = () => {
                     >
                         Create
                     </Button>
+
+                    {createPostMutation.isError && (
+                        <Alert
+                            style={{ marginTop: '10px' }}
+                            message={createPostMutation.error.message}
+                            type="error"
+                            showIcon
+                        />
+                    )}
+                    {editPostMutation.isError && (
+                        <Alert
+                            style={{ marginTop: '10px' }}
+                            message={editPostMutation.error.message}
+                            type="error"
+                            showIcon
+                        />
+                    )}
                 </form>
             </div>
         </div>

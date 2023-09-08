@@ -2,11 +2,8 @@ import { Button, Alert } from 'antd';
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
 
 const SignIn = ({ checkToken }) => {
-    const navigate = useNavigate();
-
     const {
         register,
         reset,
@@ -30,8 +27,11 @@ const SignIn = ({ checkToken }) => {
                     'login: token записан в глобальное состояние',
                     token
                 );
-                checkToken();
-                navigate('/');
+
+                setTimeout(() => {
+                    location.reload();
+                }, 500);
+                window.location.href = '/';
             },
             onError: (error) => {
                 console.log('error:', error.message);
@@ -48,7 +48,7 @@ const SignIn = ({ checkToken }) => {
         };
         console.log('login request data:', requestData);
         signUpMutation.mutate(requestData);
-        reset();
+        // reset();
     };
 
     return (

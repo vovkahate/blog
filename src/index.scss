@@ -354,9 +354,8 @@ header {
 
 .tag-buttons {
     background-color: transparent;
-    margin-left: 15px;
-    border-radius: 4px;
 
+    border-radius: 4px;
     font-family: 'Roboto', sans-serif;
     font-size: 12px;
     font-style: normal;
@@ -369,9 +368,23 @@ header {
 .delete {
     color: #f5222d;
     border: 1px solid #f5222d;
+    margin-left: 15px;
 }
 
 .add {
     color: #1890ff;
     border: 1px solid #1890ff;
+    margin-left: 15px;
+}
+
+.add1 {
+    color: #1890ff;
+    border: 1px solid #1890ff;
+}
+
+.article-right-part {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
 }
