@@ -365,12 +365,6 @@ header {
     cursor: pointer;
 }
 
-.delete {
-    color: #f5222d;
-    border: 1px solid #f5222d;
-    margin-left: 15px;
-}
-
 .add {
     color: #1890ff;
     border: 1px solid #1890ff;
@@ -387,4 +381,24 @@ header {
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
+}
+
+.header-edit-article {
+    border: 1px solid #52c41a;
+    border-radius: 5px;
+    color: #52c41a;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 22px;
+    padding: 3px 8px;
+
+    text-decoration: none;
+}
+
+.delete {
+    color: #f5222d;
+    border: 1px solid #f5222d;
+    margin-right: 15px;
 }

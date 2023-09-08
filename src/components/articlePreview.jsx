@@ -72,7 +72,6 @@ const ArticlePreview = ({ article, favorited, author }) => {
 
     const likeMutation = useMutation(artilceLike);
     const dislikeMutation = useMutation(artilceDisike);
-
     const deleteMutation = useMutation(articleDelete);
 
     let isLiked = false;
@@ -142,12 +141,6 @@ const ArticlePreview = ({ article, favorited, author }) => {
                 </div>
                 {author === article.author.username && (
                     <div className="article-buttons">
-                        <Link
-                            to={`/articles/${article.slug}/edit`}
-                            state={{ article }}
-                        >
-                            Edit
-                        </Link>
                         <Popconfirm
                             title="Delete the task"
                             description="Are you sure to delete this article?"
@@ -157,8 +150,15 @@ const ArticlePreview = ({ article, favorited, author }) => {
                             cancelText="No"
                             placement="rightTop"
                         >
-                            <button>delete</button>
+                            <a className="header-edit-article delete">Delete</a>
                         </Popconfirm>
+                        <Link
+                            to={`/articles/${article.slug}/edit`}
+                            state={{ article }}
+                            className="header-edit-article"
+                        >
+                            Edit
+                        </Link>
                     </div>
                 )}
             </div>
