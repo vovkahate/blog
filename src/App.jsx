@@ -49,7 +49,7 @@ const App = () => {
     const favorited = useQuery({
         queryKey: ['favorited', name, bearer],
         queryFn: () => FetchService.fetchFavorited(bearer, name),
-        enabled: !!name,
+        enabled: !!name && !!bearer,
     });
 
     if (isLoading && !data) {

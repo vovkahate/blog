@@ -26,6 +26,7 @@ class FetchService {
                 },
             }
         );
+        console.log('запрос списка лайков', response.data);
 
         return response.data;
     }

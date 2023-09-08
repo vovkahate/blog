@@ -47,12 +47,15 @@ const ArticlePreview = ({ article, favorited }) => {
     const likeMutation = useMutation(artilceLike);
     const dislikeMutation = useMutation(artilceDisike);
 
-    if (!favorited.data || !favorited.data.articles) {
-        return <div>error favorited</div>;
-    }
-    const isLiked = favorited.data.articles
-        ? favorited.data.articles.some((item) => item.slug === article.slug)
-        : false;
+    let isLiked = false;
+    // let  isLiked = favorited.data.articles
+    //     ? favorited.data.articles.some((item) => item.slug === article.slug)
+    //     : false;
+    if (favorited.data)
+        isLiked = favorited.data.articles.some(
+            (item) => item.slug === article.slug
+        );
+    else isLiked = false;
 
     return (
         <>
