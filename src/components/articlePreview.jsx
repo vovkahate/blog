@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Popconfirm, message } from 'antd';
+import pic from '../assets/images/userHasNoPicture.svg';
 
 const ArticlePreview = ({ article, favorited, author }) => {
     const navigate = useNavigate();
@@ -82,6 +83,10 @@ const ArticlePreview = ({ article, favorited, author }) => {
         );
     else isLiked = false;
 
+    const handleImageError = (event) => {
+        event.target.src = pic;
+    };
+
     return (
         <>
             <div className="article-info">
@@ -129,6 +134,7 @@ const ArticlePreview = ({ article, favorited, author }) => {
                     </div>
                     <div>
                         <img
+                            onError={handleImageError}
                             src={article.author.image}
                             style={{
                                 width: '46px',
