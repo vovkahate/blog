@@ -1,8 +1,7 @@
 import { Link } from 'react-router-dom';
 import userNoPic from '../assets/images/userHasNoPicture.svg';
 import { Outlet } from 'react-router-dom';
-//import { useEffect } from 'react';
-// import { useQueryClient } from '@tanstack/react-query';
+import { useState, useMemo } from 'react';
 
 const Header = ({ token }) => {
     const handleLogout = () => {
@@ -13,13 +12,22 @@ const Header = ({ token }) => {
         window.location.href = '/';
     };
 
-    const userData = JSON.parse(localStorage.getItem('userInfo'));
-    const userName = userData ? userData.username : '';
-    const userImageSrc = userData
-        ? userData.image
-            ? userData.image
-            : userNoPic
-        : userNoPic;
+    const [userData] = useState(() =>
+        JSON.parse(localStorage.getItem('userInfo'))
+    );
+    const userName = useMemo(
+        () => (userData ? userData.username : ''),
+        [userData]
+    );
+    const userImageSrc = useMemo(
+        () =>
+            userData
+                ? userData.image
+                    ? userData.image
+                    : userNoPic
+                : userNoPic,
+        [userData]
+    );
 
     return (
         <>

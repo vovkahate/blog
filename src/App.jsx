@@ -5,18 +5,14 @@ import { useState, useEffect } from 'react';
 import { Pagination } from 'antd';
 import { useQuery } from '@tanstack/react-query';
 import FetchService from './services/fetch.service';
-import {
-    BrowserRouter,
-    Routes,
-    Route,
-    createBrowserRouter,
-} from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Header from './components/header';
 import { NewAccountMemo } from './components/signUp';
 import SignIn from './components/signIn';
 import EditProfile from './components/editProfile';
 import CreatePost from './components/createPost';
 import RequireAuth from './hoc/requireAuth';
+import Loader from './components/loader';
 
 const App = () => {
     const [page, setPage] = useState(1);
@@ -29,17 +25,11 @@ const App = () => {
         if (userData) {
             setHasToken(true);
             setBearer(userData.token);
+            setName(userData.username);
         } else {
             setHasToken(false);
         }
-    }, [setHasToken, setBearer]);
-
-    useEffect(() => {
-        const storedName = JSON.parse(localStorage.getItem('userInfo'));
-        if (storedName) {
-            setName(storedName.username);
-        }
-    }, []);
+    }, [setHasToken, setBearer, setName]);
 
     useEffect(() => {
         checkToken();
@@ -93,6 +83,7 @@ const App = () => {
                         </>
                     }
                 />
+
                 <Route
                     path="articles/:slug"
                     element={
@@ -121,7 +112,6 @@ const App = () => {
                         </RequireAuth>
                     }
                 />
-
                 <Route
                     path="/new-article"
                     element={
