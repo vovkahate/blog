@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Popconfirm, message } from 'antd';
-import pic from '../assets/images/userHasNoPicture.svg';
+import pic from '../assets/images/default.jpg';
 
 const ArticlePreview = ({ article, favorited, author }) => {
     const navigate = useNavigate();
@@ -15,8 +15,7 @@ const ArticlePreview = ({ article, favorited, author }) => {
         deleteMutation.mutate(article.slug);
     };
     const cancel = (e) => {
-        //console.log(e);
-        //message.error('Click on No');
+        message.error('Delete cancelled');
     };
 
     const queryClient = useQueryClient();
@@ -140,6 +139,7 @@ const ArticlePreview = ({ article, favorited, author }) => {
                                 width: '46px',
                                 height: '46px',
                                 borderRadius: 50,
+                                marginLeft: '12px',
                             }}
                             alt="Author pic"
                         />
@@ -156,7 +156,9 @@ const ArticlePreview = ({ article, favorited, author }) => {
                             cancelText="No"
                             placement="rightTop"
                         >
-                            <a className="header-edit-article delete">Delete</a>
+                            <a className="header-edit-article delete-post">
+                                Delete
+                            </a>
                         </Popconfirm>
                         <Link
                             to={`/articles/${article.slug}/edit`}

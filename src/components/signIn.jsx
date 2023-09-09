@@ -1,4 +1,4 @@
-import { Button, Alert } from 'antd';
+import { Button, Alert, message } from 'antd';
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
@@ -29,12 +29,14 @@ const SignIn = ({ checkToken }) => {
                 );
 
                 setTimeout(() => {
+                    message.success('Click on Yes');
                     location.reload();
                 }, 500);
                 window.location.href = '/';
             },
             onError: (error) => {
                 console.log('error:', error.message);
+                reset();
             },
         }
     );
