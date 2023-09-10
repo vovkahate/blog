@@ -11,7 +11,9 @@ import { useAuth } from '../hoc/useAuth';
 const ArticlePreview = ({ article, favorited, author }) => {
     const queryClient = useQueryClient();
     const navigate = useNavigate();
+
     const { bearerToken: token } = useAuth();
+
     const confirm = () => {
         deleteMutation.mutate(article.slug);
     };
@@ -20,6 +22,11 @@ const ArticlePreview = ({ article, favorited, author }) => {
     };
 
     const masterMutation = async (slug, type) => {
+        if (!token) {
+            //navigate('/sign-in');
+            message.error('You must be logged in to perform this action');
+            return;
+        }
         try {
             const config = {
                 headers: {
@@ -45,11 +52,9 @@ const ArticlePreview = ({ article, favorited, author }) => {
                 default:
                     throw new Error(`Invalid type: ${type}`);
             }
-
             queryClient.invalidateQueries('articles');
         } catch (error) {
-            console.error(error);
-            throw error;
+            console.log('error: ', error);
         }
     };
 

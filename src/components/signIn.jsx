@@ -1,4 +1,4 @@
-import { Button, Alert } from 'antd';
+import { Button, Alert, message } from 'antd';
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
@@ -36,11 +36,13 @@ const SignIn = () => {
                     data
                 );
                 signin(data.user.username, token, pic, () => {
+                    message.success('Logged in successfully! Welcome!');
                     navigate('/');
                 });
             },
             onError: (error) => {
                 console.log('error:', error.message);
+                message.error('Error, incorrect email or password');
                 reset();
             },
         }
