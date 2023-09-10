@@ -12,7 +12,7 @@ import SignIn from './components/signIn';
 import EditProfile from './components/editProfile';
 import CreatePost from './components/createPost';
 import RequireAuth from './hoc/requireAuth';
-import Loader from './components/loader';
+import AuthProvider from './hoc/AuthProvider';
 
 const App = () => {
     const [page, setPage] = useState(1);
