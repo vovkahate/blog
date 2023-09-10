@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Button, Alert } from 'antd';
+import { Button, Alert, message } from 'antd';
 import { useForm, useFieldArray } from 'react-hook-form';
 import axios from 'axios';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -57,12 +57,13 @@ const CreatePost = () => {
         {
             onSuccess: (data) => {
                 console.log('create post', data);
+                message.success('Post created successfully!');
                 return queryClient.invalidateQueries('articles').then(() => {
                     navigate('/');
                 });
             },
             onError: (error) => {
-                console.log('error:', error.message);
+                message.error('Error, try again!', error.message);
             },
         }
     );
@@ -88,12 +89,13 @@ const CreatePost = () => {
         {
             onSuccess: (data) => {
                 console.log('edit post', data);
+                message.success('Post edited successfully!');
                 return queryClient.invalidateQueries('articles').then(() => {
                     navigate(`/`);
                 });
             },
             onError: (error) => {
-                console.log('error:', error.message);
+                message.error('Error, try again!', error.message);
             },
         }
     );

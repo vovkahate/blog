@@ -31,10 +31,6 @@ const SignIn = () => {
                 const token = data.user.token;
                 const pic = data.user.image ? data.user.image : noPic;
                 localStorage.setItem('userInfo', JSON.stringify(data.user));
-                console.log(
-                    'login: token записан в глобальное состояние',
-                    data
-                );
                 signin(data.user.username, token, pic, () => {
                     message.success('Logged in successfully! Welcome!');
                     navigate('/');

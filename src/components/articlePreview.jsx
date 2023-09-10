@@ -24,7 +24,7 @@ const ArticlePreview = ({ article, favorited, author }) => {
     const masterMutation = async (slug, type) => {
         if (!token) {
             //navigate('/sign-in');
-            message.error('You must be logged in to perform this action');
+            message.error('You must be logged in!');
             return;
         }
         try {

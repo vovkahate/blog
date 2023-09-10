@@ -1,4 +1,4 @@
-import { Button, Alert } from 'antd';
+import { Button, Alert, message } from 'antd';
 import React from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
@@ -32,15 +32,13 @@ const NewAccount = () => {
                 const token = data.user.token;
                 const pic = noPic;
                 localStorage.setItem('userInfo', JSON.stringify(data.user));
-                console.log(
-                    'signup: token записан в глобальное состояние',
-                    data
-                );
+                message.success('Signed up successfully! Welcome!');
                 signin(data.user.username, token, pic, () => {
                     navigate('/');
                 });
             },
             onError: (error) => {
+                message.error('Error, try again!');
                 console.log('error:', error.message);
             },
         }

@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { Button, Alert } from 'antd';
+import { Button, Alert, message } from 'antd';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hoc/useAuth';
@@ -39,12 +39,13 @@ const EditProfile = () => {
                     'update: token записан в глобальное состояние',
                     data
                 );
+                message.success('Profile updated successfully!');
                 signin(data.user.username, token, pic, () => {
                     navigate('/profile');
                 });
             },
             onError: (error) => {
-                console.log('error:', error.message);
+                message.error('Error, try again!', error.message);
             },
         }
     );
