@@ -82,10 +82,7 @@ const App = () => {
                     path="profile"
                     element={
                         <RequireAuth>
-                            <EditProfile
-                                token={bearer}
-                                checkToken={bearer}
-                            />
+                            <EditProfile />
                         </RequireAuth>
                     }
                 />

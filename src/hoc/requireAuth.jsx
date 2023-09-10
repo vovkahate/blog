@@ -5,13 +5,7 @@ const RequireAuth = ({ children }) => {
     const { bearerToken } = useAuth();
 
     if (!bearerToken) {
-        return (
-            <Navigate
-                to="/sign-in"
-                state={{ from: location }}
-                replace
-            />
-        );
+        return <Navigate to="/sign-in" />;
     }
 
     return children;

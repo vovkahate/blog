@@ -9,8 +9,6 @@ const CreatePost = () => {
     const location = useLocation();
     const article = location.state;
 
-    //console.log('article:', article);
-
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const {
