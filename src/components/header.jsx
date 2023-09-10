@@ -1,9 +1,8 @@
 import { Link } from 'react-router-dom';
-import userNoPic from '../assets/images/userHasNoPicture.svg';
 import { Outlet } from 'react-router-dom';
-import { useState, useMemo } from 'react';
+import { useAuth } from '../hoc/useAuth';
 
-const Header = ({ token }) => {
+const Header = () => {
     const handleLogout = () => {
         localStorage.clear();
         setTimeout(() => {
@@ -12,22 +11,7 @@ const Header = ({ token }) => {
         window.location.href = '/';
     };
 
-    const [userData] = useState(() =>
-        JSON.parse(localStorage.getItem('userInfo'))
-    );
-    const userName = useMemo(
-        () => (userData ? userData.username : ''),
-        [userData]
-    );
-    const userImageSrc = useMemo(
-        () =>
-            userData
-                ? userData.image
-                    ? userData.image
-                    : userNoPic
-                : userNoPic,
-        [userData]
-    );
+    const { username: name, pic: userImageSrc, bearerToken: token } = useAuth();
 
     return (
         <>
@@ -67,7 +51,7 @@ const Header = ({ token }) => {
                             to="/profile"
                             style={{ textDecoration: 'none' }}
                         >
-                            <h6 className="header-logged-name">{userName}</h6>
+                            <h6 className="header-logged-name">{name}</h6>
                         </Link>
                         <Link to="/profile">
                             <img

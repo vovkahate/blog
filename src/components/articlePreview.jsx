@@ -6,73 +6,60 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Popconfirm, message } from 'antd';
 import pic from '../assets/images/default.jpg';
+import { useAuth } from '../hoc/useAuth';
 
 const ArticlePreview = ({ article, favorited, author }) => {
+    const queryClient = useQueryClient();
     const navigate = useNavigate();
-    const confirm = (e) => {
-        console.log(e);
-        //message.success('Click on Yes');
+    const { bearerToken: token } = useAuth();
+    const confirm = () => {
         deleteMutation.mutate(article.slug);
     };
-    const cancel = (e) => {
+    const cancel = () => {
         message.error('Delete cancelled');
     };
 
-    const queryClient = useQueryClient();
-
-    const artilceLike = async (slug) => {
-        const bearer = JSON.parse(localStorage.getItem('userInfo'));
-        if (!bearer) {
-            return;
-        }
-        await axios.post(
-            `https://blog.kata.academy/api/articles/${slug}/favorite`,
-            null,
-            {
+    const masterMutation = async (slug, type) => {
+        try {
+            const config = {
                 headers: {
-                    Authorization: `Bearer ${bearer.token}`,
+                    Authorization: `Bearer ${token}`,
                 },
+                url: `https://blog.kata.academy/api/articles/${slug}`,
+            };
+
+            switch (type) {
+                case 'like':
+                    config.url += '/favorite';
+                    await axios.post(config.url, null, config);
+                    break;
+                case 'dislike':
+                    config.url += '/favorite';
+                    await axios.delete(config.url, config);
+                    break;
+                case 'delete':
+                    await axios.delete(config.url, config);
+                    queryClient.invalidateQueries('articles');
+                    navigate('/');
+                    return;
+                default:
+                    throw new Error(`Invalid type: ${type}`);
             }
-        );
 
-        queryClient.invalidateQueries('articles');
-    };
-
-    const artilceDisike = async (slug) => {
-        const bearer = JSON.parse(localStorage.getItem('userInfo'));
-        if (!bearer) {
-            return;
+            queryClient.invalidateQueries('articles');
+        } catch (error) {
+            console.error(error);
+            throw error;
         }
-
-        await axios.delete(
-            `https://blog.kata.academy/api/articles/${slug}/favorite`,
-
-            {
-                headers: {
-                    Authorization: `Bearer ${bearer.token}`,
-                },
-            }
-        );
-        queryClient.invalidateQueries('articles');
     };
 
-    const articleDelete = async (slug) => {
-        const bearer = JSON.parse(localStorage.getItem('userInfo'));
-        if (!bearer) {
-            return;
-        }
-        await axios.delete(`https://blog.kata.academy/api/articles/${slug}`, {
-            headers: {
-                Authorization: `Bearer ${bearer.token}`,
-            },
-        });
-        queryClient.invalidateQueries('articles');
-        navigate('/');
-    };
-
-    const likeMutation = useMutation(artilceLike);
-    const dislikeMutation = useMutation(artilceDisike);
-    const deleteMutation = useMutation(articleDelete);
+    const likeMutation = useMutation((slug) => masterMutation(slug, 'like'));
+    const dislikeMutation = useMutation((slug) =>
+        masterMutation(slug, 'dislike')
+    );
+    const deleteMutation = useMutation((slug) =>
+        masterMutation(slug, 'delete')
+    );
 
     let isLiked = false;
 
@@ -107,7 +94,9 @@ const ArticlePreview = ({ article, favorited, author }) => {
                                 marginRight: '5px',
                             }}
                             twoToneColor="#eb2f96"
-                            onClick={() => dislikeMutation.mutate(article.slug)}
+                            onClick={() =>
+                                dislikeMutation.mutate(article.slug, 'dislike')
+                            }
                         />
                     ) : (
                         <HeartOutlined
@@ -116,7 +105,9 @@ const ArticlePreview = ({ article, favorited, author }) => {
                                 marginRight: '5px',
                                 color: 'rgba(0, 0, 0, 0.75)',
                             }}
-                            onClick={() => likeMutation.mutate(article.slug)}
+                            onClick={() =>
+                                likeMutation.mutate(article.slug, 'like')
+                            }
                         />
                     )}
 

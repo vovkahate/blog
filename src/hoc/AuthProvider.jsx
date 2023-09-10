@@ -1,24 +1,38 @@
-import { useState, createContext } from 'react';
+import { useState, useEffect, createContext } from 'react';
 
-export const AuthContext = createContext();
+export const AuthContext = createContext(null);
 
 const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
-    const [token, setToken] = useState(null);
+    const [username, setUsername] = useState('');
+    const [bearerToken, setBearerToken] = useState('');
+    const [pic, setPic] = useState('');
 
-    const signin = (newUser, token, cb) => {
-        setUser(newUser);
-        setToken('fake-jwt-token');
+    useEffect(() => {
+        const userData = JSON.parse(localStorage.getItem('userInfo'));
+        if (userData) {
+            setUsername(userData.username);
+            setBearerToken(userData.token);
+            setPic(userData.image);
+            console.log('name and token and pic:', username, bearerToken, pic);
+        }
+    }, []);
+
+    const signin = (newUser, token, pic, cb) => {
+        setUsername(newUser);
+        setBearerToken(token);
+        setPic(pic);
+        console.log('signin:', newUser, token, pic);
         cb();
     };
 
     const signout = (cb) => {
-        setUser(null);
-        setToken(null);
+        setUsername('');
+        setBearerToken('');
+        setPic('');
         cb();
     };
 
-    const value = { user, token, signin, signout };
+    const value = { username, bearerToken, pic, signin, signout };
 
     return (
         <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

@@ -1,12 +1,10 @@
-import { useLocation, Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
+import { useAuth } from './useAuth';
 
 const RequireAuth = ({ children }) => {
-    const location = useLocation();
+    const { bearerToken } = useAuth();
 
-    const data = JSON.parse(localStorage.getItem('userInfo'));
-    const token = data ? data.token : null;
-    let auth = token !== null && token !== undefined;
-    if (!auth) {
+    if (!bearerToken) {
         return (
             <Navigate
                 to="/sign-in"

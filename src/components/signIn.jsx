@@ -1,9 +1,16 @@
-import { Button, Alert, message } from 'antd';
+import { Button, Alert } from 'antd';
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
+import { useAuth } from '../hoc/useAuth';
+import { useNavigate } from 'react-router-dom';
 
-const SignIn = ({ checkToken }) => {
+import noPic from '../assets/images/userHasNoPicture.svg';
+
+const SignIn = () => {
+    const { signin } = useAuth();
+    const navigate = useNavigate();
+
     const {
         register,
         reset,
@@ -22,17 +29,15 @@ const SignIn = ({ checkToken }) => {
         {
             onSuccess: (data) => {
                 const token = data.user.token;
+                const pic = data.user.image ? data.user.image : noPic;
                 localStorage.setItem('userInfo', JSON.stringify(data.user));
                 console.log(
                     'login: token записан в глобальное состояние',
-                    token
+                    data
                 );
-
-                setTimeout(() => {
-                    message.success('Click on Yes');
-                    location.reload();
-                }, 500);
-                window.location.href = '/';
+                signin(data.user.username, token, pic, () => {
+                    navigate('/');
+                });
             },
             onError: (error) => {
                 console.log('error:', error.message);

@@ -1,43 +1,21 @@
-import React from 'react';
 import ArticleList from './components/articleList';
 import Article from './components/article';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Pagination } from 'antd';
 import { useQuery } from '@tanstack/react-query';
 import FetchService from './services/fetch.service';
 import { Routes, Route } from 'react-router-dom';
 import Header from './components/header';
-import { NewAccountMemo } from './components/signUp';
 import SignIn from './components/signIn';
 import EditProfile from './components/editProfile';
 import CreatePost from './components/createPost';
 import RequireAuth from './hoc/requireAuth';
-import AuthProvider from './hoc/AuthProvider';
+import { NewAccountMemo } from './components/signUp';
+import { useAuth } from './hoc/useAuth';
 
 const App = () => {
     const [page, setPage] = useState(1);
-    const [hasToken, setHasToken] = useState(false);
-    const [bearer, setBearer] = useState(null);
-    const [name, setName] = useState('');
-
-    const checkToken = React.useCallback(() => {
-        const userData = JSON.parse(localStorage.getItem('userInfo'));
-        if (userData) {
-            setHasToken(true);
-            setBearer(userData.token);
-            setName(userData.username);
-        } else {
-            setHasToken(false);
-        }
-    }, [setHasToken, setBearer, setName]);
-
-    useEffect(() => {
-        checkToken();
-        window.addEventListener('storage', checkToken);
-        return () => {
-            window.removeEventListener('storage', checkToken);
-        };
-    }, []);
+    const { username: name, bearerToken: bearer } = useAuth();
 
     const { isLoading, error, data } = useQuery({
         queryKey: ['articles', page],
@@ -57,12 +35,11 @@ const App = () => {
     if (error) {
         return <div>Error: {error.message}</div>;
     }
-
     return (
         <Routes>
             <Route
                 path="/"
-                element={<Header token={hasToken} />}
+                element={<Header />}
             >
                 <Route
                     index
@@ -95,19 +72,19 @@ const App = () => {
                 />
                 <Route
                     path="sign-up"
-                    element={<NewAccountMemo checkToken={checkToken} />}
+                    element={<NewAccountMemo />}
                 />
                 <Route
                     path="sign-in"
-                    element={<SignIn checkToken={checkToken} />}
+                    element={<SignIn />}
                 />
                 <Route
                     path="profile"
                     element={
                         <RequireAuth>
                             <EditProfile
-                                token={hasToken}
-                                checkToken={checkToken}
+                                token={bearer}
+                                checkToken={bearer}
                             />
                         </RequireAuth>
                     }

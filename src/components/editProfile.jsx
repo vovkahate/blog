@@ -3,13 +3,15 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { Button, Alert } from 'antd';
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../hoc/useAuth';
 
-const EditProfile = ({ token, checkToken }) => {
-    const bearer = JSON.parse(localStorage.getItem('userInfo'));
+const EditProfile = () => {
+    const navigate = useNavigate();
+    const { pic: userImageSrc, bearerToken: token, signin } = useAuth();
 
     const {
         register,
-        reset,
         formState: { errors, isValid },
         handleSubmit,
         setValue,
@@ -22,7 +24,7 @@ const EditProfile = ({ token, checkToken }) => {
                 formData,
                 {
                     headers: {
-                        Authorization: `Bearer ${bearer.token}`,
+                        Authorization: `Bearer ${token}`,
                     },
                 }
             );
@@ -31,12 +33,15 @@ const EditProfile = ({ token, checkToken }) => {
         {
             onSuccess: (data) => {
                 const token = data.user.token;
+                const pic = data.user.image ? data.user.image : userImageSrc;
                 localStorage.setItem('userInfo', JSON.stringify(data.user));
                 console.log(
                     'update: token записан в глобальное состояние',
-                    token
+                    data
                 );
-                checkToken();
+                signin(data.user.username, token, pic, () => {
+                    navigate('/profile');
+                });
             },
             onError: (error) => {
                 console.log('error:', error.message);
@@ -54,6 +59,7 @@ const EditProfile = ({ token, checkToken }) => {
             setValue('avatar', image);
         }
     }, [setValue]);
+
     const onSubmit = (data) => {
         const requestData = {
             user: {
