@@ -34,10 +34,14 @@ const App = () => {
     });
 
     if (isLoading && !data) {
-        return <div>Loading...</div>;
+        return (
+            <>
+                <Header loader={true} />
+            </>
+        );
     }
     if (error) {
-        return <Loader />;
+        return <h1>404</h1>;
     }
     return (
         <Routes>

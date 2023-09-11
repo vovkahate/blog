@@ -4,7 +4,7 @@ import { useAuth } from '../hoc/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { message } from 'antd';
 
-const Header = () => {
+const Header = ({ loader = false }) => {
     const navigate = useNavigate();
 
     const { signout } = useAuth();
@@ -77,6 +77,7 @@ const Header = () => {
             </header>
             <div className="wrapper">
                 <div className="body">
+                    {loader && <h1>Loading...</h1>}
                     <Outlet />
                 </div>
             </div>
