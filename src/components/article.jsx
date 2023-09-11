@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom';
 import ArticlePreview from './articlePreview';
+import ReactMarkdown from 'react-markdown';
 
 const Article = ({ articles, favorited }) => {
     const { slug } = useParams(); // смотрю какой slug по адресу
@@ -16,7 +17,9 @@ const Article = ({ articles, favorited }) => {
                     {...(username && { author: username })}
                 />
             </div>
-            <div className="article-body">{article.body}</div>
+            <div className="article-body">
+                {article.body && <ReactMarkdown>{article.body}</ReactMarkdown>}
+            </div>
         </div>
     );
 };

@@ -7,7 +7,6 @@ class FetchService {
         const response = await axios.get(
             `https://blog.kata.academy/api/articles?offset=${offset}&limit=${FetchService.PAGE_SIZE}`
         );
-        console.log('запрос 5 статей из сервиса', response.data);
         return response.data;
     }
 

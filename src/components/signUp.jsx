@@ -34,7 +34,7 @@ const NewAccount = () => {
                 localStorage.setItem('userInfo', JSON.stringify(data.user));
                 message.success('Signed up successfully! Welcome!');
                 signin(data.user.username, token, pic, () => {
-                    navigate('/');
+                    navigate('/articles');
                 });
             },
             onError: (error) => {

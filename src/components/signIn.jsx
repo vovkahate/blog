@@ -33,7 +33,7 @@ const SignIn = () => {
                 localStorage.setItem('userInfo', JSON.stringify(data.user));
                 signin(data.user.username, token, pic, () => {
                     message.success('Logged in successfully! Welcome!');
-                    navigate('/');
+                    navigate('/articles');
                 });
             },
             onError: (error) => {

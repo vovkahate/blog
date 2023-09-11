@@ -57,7 +57,7 @@ const CreatePost = () => {
                 console.log('create post', data);
                 message.success('Post created successfully!');
                 return queryClient.invalidateQueries('articles').then(() => {
-                    navigate('/');
+                    navigate('/articles');
                 });
             },
             onError: (error) => {
@@ -89,7 +89,7 @@ const CreatePost = () => {
                 console.log('edit post', data);
                 message.success('Post edited successfully!');
                 return queryClient.invalidateQueries('articles').then(() => {
-                    navigate(`/`);
+                    navigate(`/articles`);
                 });
             },
             onError: (error) => {

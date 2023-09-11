@@ -1,14 +1,19 @@
 import { Link } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
 import { useAuth } from '../hoc/useAuth';
+import { useNavigate } from 'react-router-dom';
+import { message } from 'antd';
 
 const Header = () => {
+    const navigate = useNavigate();
+
+    const { signout } = useAuth();
+
     const handleLogout = () => {
-        localStorage.clear();
-        setTimeout(() => {
-            location.reload();
-        }, 500);
-        window.location.href = '/';
+        signout(() => {
+            message.success('Logged out successfully! Good bye!');
+            navigate('/articles');
+        });
     };
 
     const { username: name, pic: userImageSrc, bearerToken: token } = useAuth();
@@ -18,7 +23,7 @@ const Header = () => {
             <header>
                 <h6 className="header-title">
                     <Link
-                        to="/"
+                        to="/articles"
                         style={{ textDecoration: 'none', color: 'black' }}
                     >
                         Realworld Blog

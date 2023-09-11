@@ -47,7 +47,8 @@ const ArticlePreview = ({ article, favorited, author }) => {
                 case 'delete':
                     await axios.delete(config.url, config);
                     queryClient.invalidateQueries('articles');
-                    navigate('/');
+                    message.success('Article deleted successfully!');
+                    navigate('/articles');
                     return;
                 default:
                     throw new Error(`Invalid type: ${type}`);

@@ -26,6 +26,7 @@ const AuthProvider = ({ children }) => {
     };
 
     const signout = (cb) => {
+        localStorage.removeItem('userInfo');
         setUsername('');
         setBearerToken('');
         setPic('');

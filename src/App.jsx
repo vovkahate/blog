@@ -1,16 +1,20 @@
+import Header from './components/header';
+import Loader from './components/loader';
 import ArticleList from './components/articleList';
 import Article from './components/article';
-import { useState } from 'react';
-import { Pagination } from 'antd';
-import { useQuery } from '@tanstack/react-query';
-import FetchService from './services/fetch.service';
-import { Routes, Route } from 'react-router-dom';
-import Header from './components/header';
 import SignIn from './components/signIn';
 import EditProfile from './components/editProfile';
 import CreatePost from './components/createPost';
-import RequireAuth from './hoc/requireAuth';
+
 import { NewAccountMemo } from './components/signUp';
+import FetchService from './services/fetch.service';
+
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Routes, Route, Navigate } from 'react-router-dom';
+
+import { Pagination } from 'antd';
+import RequireAuth from './hoc/requireAuth';
 import { useAuth } from './hoc/useAuth';
 
 const App = () => {
@@ -33,16 +37,20 @@ const App = () => {
         return <div>Loading...</div>;
     }
     if (error) {
-        return <div>Error: {error.message}</div>;
+        return <Loader />;
     }
     return (
         <Routes>
             <Route
                 path="/"
+                element={<Navigate to="/articles" />}
+            />
+            <Route
+                path="/"
                 element={<Header />}
             >
                 <Route
-                    index
+                    path="/articles"
                     element={
                         <>
                             <ArticleList
