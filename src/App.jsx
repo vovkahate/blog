@@ -34,11 +34,7 @@ const App = () => {
     });
 
     if (isLoading && !data) {
-        return (
-            <>
-                <Header loader={true} />
-            </>
-        );
+        return <Header loader={true} />;
     }
     if (error) {
         return <h1>404</h1>;
